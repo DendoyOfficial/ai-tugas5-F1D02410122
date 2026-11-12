@@ -33,22 +33,25 @@
 
 Beberapa hasil aturan menjadi syarat aturan lain, sehingga terbentuk rantai inferensi (misalnya R3 → R4 → R7).
 
-## 4. Metode: Forward Chaining (FC)
-Dipilih FC karena pengguna biasanya mulai dari kondisi yang ia lihat atau alami (fakta), lalu program mencari kesimpulan apa saja yang bisa ditarik. Cocok untuk kesiapsiagaan bencana yang kesimpulannya bertingkat: tanda awal, tingkat risiko, lalu tindakan.
+## 4. Metode
+Metode yang digunakan adalah Forward Chaining (FC). Alasannya karena pengguna biasanya mulai dari kondisi yang ia lihat atau alami, lalu program mencari kesimpulan apa saja yang bisa ditarik. Cocok untuk kesiapsiagaan bencana yang kesimpulannya bertingkat: tanda awal, tingkat risiko, lalu tindakan.
 
 Cara kerja: fakta jawaban "ya" dimasukkan ke memori. Program mengulang: cari aturan yang syaratnya terpenuhi dan hasilnya belum ada di memori, ambil aturan pertama, tambahkan hasilnya ke memori, catat aturan itu sebagai alasan. Berhenti kalau tidak ada aturan baru. Mode `dan` berarti semua syarat harus ada, mode `atau` berarti salah satu cukup.
 
 ## 5. Kasus uji
-Screenshot ada di folder `screenshot/`.
-
 | # | Jawaban "ya" | Kesimpulan yang diharapkan |
 |---|---|---|
-| 1 | hujan deras terus-menerus, sungai/drainase meluap, tinggal di zona rawan banjir | banjir sedang atau akan terjadi, risiko banjir tinggi, evakuasi ke tempat yang lebih tinggi, siapkan tas siaga dan rute evakuasi |
-| 2 | tinggal di zona rawan banjir (tanpa hujan) | **tidak ada** (kasus negatif) |
-| 3 | hujan deras terus-menerus, retakan pada lereng, pohon/tiang miring, tinggal di dekat lereng | ada tanda awal gerakan tanah, risiko longsor tinggi, siapkan tas siaga dan rute evakuasi |
+| 1 | terdengar gemuruh atau sirine peringatan longsor | evakuasi menjauhi arah longsoran |
+| 2 | hujan deras terus-menerus saja | **tidak ada** (kasus negatif) |
+| 3 | hujan deras terus-menerus, sungai/drainase meluap, tinggal di zona rawan banjir, pohon/tiang miring di lereng, tinggal di dekat lereng | banjir sedang atau akan terjadi, risiko banjir tinggi, ada tanda awal gerakan tanah, risiko longsor tinggi, evakuasi ke tempat yang lebih tinggi, siapkan tas siaga dan rute evakuasi |
 
+Kasus 1 (hanya gemuruh atau sirine = y). Program menjalankan R5 di siklus 1, lalu berhenti di siklus 2. Kesimpulannya evakuasi menjauhi arah longsoran, dengan alasan R5 saja.
 ![Kasus 1](screenshot/kasus1.png)
+
+Kasus 2 (hanya hujan deras = y). Tidak ada aturan yang cocok karena R1, R2, dan R4 butuh syarat tambahan. Program berhenti di siklus 1 dengan kesimpulan: tidak ada. Ini kasus negatif.
 ![Kasus 2](screenshot/kasus2.png)
+
+Kasus 3 (hujan, sungai meluap, zona rawan banjir, pohon miring, dekat lereng = y). Program menjalankan R1, R2, R3, R4, R6, dan R7 dalam 6 siklus, lalu berhenti di siklus 7. Ada 6 kesimpulan, antara lain banjir sedang atau akan terjadi, risiko longsor tinggi, dan siapkan tas siaga. Rantai terpanjangnya R3 → R4 → R7: pohon miring jadi tanda gerakan tanah, lalu risiko longsor tinggi, lalu siapkan tas siaga.
 ![Kasus 3](screenshot/kasus3.png)
 
 ## 6. Batas keterbatasan
